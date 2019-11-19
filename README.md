@@ -6,11 +6,11 @@ A clojure framework to test quic connections.
 
 Tested to open up to 100 streams may fail for greater numbers.
 
-**Version Negotiation**
-Versions supported as of the included version of kwik: 20, 22, 23. Currently the version negotiation does not work, the Version used is the most resent version implemented in the kwik library.
+**Version Negotiation**\
+Versions supported as of the included version of kwik: 20, 22, 23. Currently the version negotiation does not work, the version used is the most recent version implemented in the Kwik library.
 If another version is to be used, the version would need to be changed manually.
 
-**Error Handling**
+**Error Handling**\
 Severel errors are yet to be catched and are therefore thrown.
 
 Connections are currently not closed in case of an error and/or\

@@ -178,7 +178,7 @@ Severel errors are yet to be catched and are therefore thrown.
 Connections are currently not closed in case of an error and/or\
 manually due to missing support in the Kwik implementations.
 
-## Update Kwik Library
+## How-To Update the Kwik Library
 A working Kwik library is included in the project files. However if you wish to change to another version (update / rollback)
 go to the cwik project root and start ./KwikUpdater.sh\
 __In order to use the updater git needs to be installed!__

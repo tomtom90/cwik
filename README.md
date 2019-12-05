@@ -1,18 +1,21 @@
 # cwik
 
-An open, interactive and expendable clojure framework to test quic connections making use of the implementation Kwik (https://bitbucket.org/pjtr/kwik/).
+cwik is an open, interactive and exptensable Clojure (https://www.clojure.org/) framework  for automating QUIC interop tests
+and performance measurements, based on the Java-based Kwik Library (https://bitbucket.org/pjtr/kwik/). It can be used for defininig test
+campaigns programmatically and can enable reproducible experiments, facilitate automatic evaluation etc.
 
-To get started open the project root directory, go to "src/cwik" and start a REPL console:
+To get started open the project root directory, go to "src/cwik" and start a Clojure REPL:
 
 ```bash
 ~/cwik/src/cwik: lein repl
 ```
 
-When the REPL console is started, you are able to use the commands like:
+When REPL is started, you are able to use the commands like:
 
 ```clojure
 (testSingleRequestSingleHost "quic.aiortc.org" 443 "/")
 ```
+Which will return either Clojure vector containing the target content from quic.aiortc.org:443/, the time it took to send the request as well as the total packets send and the amount of packets lost or en error string if the request failed, or an error object if the connection failed.
 
 ## Dependencies
 

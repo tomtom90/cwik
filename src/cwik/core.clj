@@ -16,6 +16,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 cwik makes use of the Kwik library written by Peter Doornbosch <https://bitbucket.org/pjtr/kwik/>")
 
+#!A working public host: quic.aiortc.org:443 
 
 (ns cwik.core
   (:gen-class)
@@ -26,7 +27,7 @@ cwik makes use of the Kwik library written by Peter Doornbosch <https://bitbucke
 (def connectionTimeOut 3000)
 
 
-(comment
+(comment "
     Creates a connection to a Host
 
     @param host Hostname or IP as string
@@ -35,8 +36,7 @@ cwik makes use of the Kwik library written by Peter Doornbosch <https://bitbucke
 
     @param hostVector (host, port <?timeOut>)
 
-    @return connectionVector or Object or a vector in case the connection fails
-    )
+    @return connectionVector or Object or a vector in case the connection fails")
 (defn connectHost ([host port & [timeOut]]
                (try
                  (let [logger (SysOutLogger.)]
@@ -64,14 +64,13 @@ cwik makes use of the Kwik library written by Peter Doornbosch <https://bitbucke
          res))))
   )
 
-(comment
+(comment "
   Sends a http request on a given connection requesting the given path
 
   @param conVec Vector (path domain excluded, connection)
 
   @return A vector in case of success (http-response, request time in ns, packages sent, packages lost)
-          and a String containing the error message in case of failure.
-  )
+          and a String containing the error message in case of failure.")
 (defn httpRequest [conVec]
   (if (and (vector? (last conVec)) (boolean? (first (last conVec))))
     (last conVec)
@@ -92,15 +91,14 @@ cwik makes use of the Kwik library written by Peter Doornbosch <https://bitbucke
         (.getMessage e))))
     )
 
-(comment
+(comment "
   Sends a given amount of parallel requests to a given path on a given connection.
 
   @param path String for the file path, domain or ip excluded.
   @param con connection object
   @param times Amount of repeats
 
-  @return A vector of httpRequest-vectors
-  )
+  @return A vector of httpRequest-vectors")
 (defn repeatedRequest [path con times]
   (def conVec [])
   (if (and (vector? con) (boolean? (first con)))
@@ -108,13 +106,12 @@ cwik makes use of the Kwik library written by Peter Doornbosch <https://bitbucke
   (dotimes [i times] (def conVec (conj conVec [path con]))))
   (pmap httpRequest conVec))
 
-(comment
+(comment "
   Calculates the average request time from a vector of httpRequest-vectors,
 
   @param A vector of httpRequest-vectors
 
-  @return Result as long or es fraction
-  )
+  @return Result as long or es fraction")
 (defn getAverageTime [resVector]
   (let [sizeVector (count resVector)]
     (def devider sizeVector)
@@ -128,13 +125,12 @@ cwik makes use of the Kwik library written by Peter Doornbosch <https://bitbucke
       (let [res 0]
         res))))
 
-(comment
+(comment "
   Calculates the median request time from a vector of httpRequest-vectors without trimming.
 
   @param A vector of httpRequest-vectors
 
-  @return Result as long or es fraction
-  )
+  @return Result as long or es fraction")
 (defn getMedianTime [resVector]
   (let [sizeVector (count resVector)]
     (def timings (vector))
@@ -153,13 +149,12 @@ cwik makes use of the Kwik library written by Peter Doornbosch <https://bitbucke
      (let [res 0]
        res))))
 
-(comment
+(comment "
   Calculates the average request time from a vector of httpRequest-vectors
 
   @param A vector of httpRequest-vectors
 
-  @return Vector (min request time, max request time)
-  )
+  @return Vector (min request time, max request time)")
 (defn getMinMax [resVector]
   (let [sizeVector (count resVector)]
     (def timings [])
@@ -170,35 +165,33 @@ cwik makes use of the Kwik library written by Peter Doornbosch <https://bitbucke
     (vector (first timings) (last timings))
     ))
 
-(comment
+(comment "
   Calculates the average, median, min and max request time from a vector of httpRequest-vectors
 
   @param A vector of httpRequest-vectors
 
-  @return Vector (min , median, average, max)
-  )
+  @return Vector (min , median, average, max)")
 (defn getStatistics [resVector]
   (let [med (getMedianTime resVector)]
     (let [minmax (getMinMax resVector)]
       (let [averageTime (getAverageTime resVector)]
         (vector (first minmax) med averageTime (last minmax))))))
 
-(comment
+(comment "
   Open a single connection and send a request.
 
   @param host Hostname or IP as string
   @param port Port no. as long
   @param path String for the file path, domain or ip excluded.
   @param timeOut in ms as long (optional)
-
-  @return vector of response objects
-  )
+  
+  @return vector of response objects")
 (defn testSingleRequestSingleHost [host port path & [timeOut]]
   (if (nil? timeOut)
     (httpRequest [path (connectHost host port)])
     (httpRequest [path (connectHost host port timeOut)])))
 
-(comment
+(comment "
   Open a single connection and send a request multiple times.
 
   @param host Hostname or IP as string
@@ -207,14 +200,13 @@ cwik makes use of the Kwik library written by Peter Doornbosch <https://bitbucke
   @param requestCount Amount of requests send
   @param timeOut in ms as long (optional)
 
-  @return vector of response objects
-  )
+  @return vector of response objects")
 (defn testRepeatedRequestSingleHost [host port path requestCount & [timeOut]]
   (if (nil? timeOut)
     (repeatedRequest path (connectHost host port) requestCount)
     (repeatedRequest path (connectHost host port timeOut) requestCount)))
 
-(comment
+(comment "
   Open a single connection and send multiple requests in parallel.
 
   @param host Hostname or IP as string
@@ -222,8 +214,7 @@ cwik makes use of the Kwik library written by Peter Doornbosch <https://bitbucke
   @param path Vector of strings for the file path, domain or ip excluded.
   @param timeOut in ms as long (optional)
 
-  @return vector of response objects
-  )
+  @return vector of response objects")
 (defn testMultipleRequestSingleHost [host port path & [timeout]]
   (if (nil? timeout)
     (def hostConnection (connectHost host port))
@@ -233,15 +224,14 @@ cwik makes use of the Kwik library written by Peter Doornbosch <https://bitbucke
   (dotimes [i (count path)] (def requestVectors (conj requestVectors [(nth path i) hostConnection])))
   (pmap httpRequest requestVectors))
 
-(comment
+(comment "
   Open multiple connections and send the same request on each connection.
 
   @param host Vector of hostVectors [[String host, long port]...]
   @param path String for the file path, domain or ip excluded.
   @param timeOut in ms as long (optional)
 
-  @return vector of response objects
-  )
+  @return vector of response objects")
 (defn testSingleRequestMultipleHosts [hostVector path]
   (def connections [])
   (def connections (pmap connectHost hostVector))
@@ -253,14 +243,13 @@ cwik makes use of the Kwik library written by Peter Doornbosch <https://bitbucke
   (conj failedConnections (pmap httpRequest requestVectors))
   )
 
-(comment
+(comment "
   Open multiple connections and send a request each.
 
   @param host Vector of hostVectors [[String host, long port] ...]
   @param path Vector of Strings for the file path, domain or ip excluded [String path_0 String path_1 ... ] .
 
-  @return vector of response objects
-  )
+  @return vector of response objects")
 (defn testMultiRequestMultipleHosts [hosts path]
   (def connections (pmap connectHost hosts))
   (def connections (into [] connections))
@@ -274,9 +263,7 @@ cwik makes use of the Kwik library written by Peter Doornbosch <https://bitbucke
   (println "cwik a testframework for quic")
   (println "Version 1.0.0?")
   )
-#!quic.aiortc.org:443 //Currently the only working remote host
 
-#!127.0.0.1:4433
-#!python3 http3_server.py --certificate ../tests/ssl_cert.pem --private-key ../tests/ssl_key.pem
+
 
 

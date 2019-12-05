@@ -74,7 +74,7 @@ cwik makes use of the Kwik library written by Peter Doornbosch <https://bitbucke
   )
 (defn httpRequest [conVec]
   (if (and (vector? (last conVec)) (boolean? (first (last conVec))))
-    (println (last (last conVec)))
+    (last conVec)
     (try
       (let [stream (.createStream (last conVec) true)]
         (let [startTime (. System (nanoTime))]

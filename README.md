@@ -19,6 +19,7 @@ When REPL is started, you are able to use the commands like:
 Which will return either Clojure vector containing the target content from quic.aiortc.org:443/, the time it took to send the request as well as the total packets send and the amount of packets lost or en error string if the request failed, or an error object if the connection failed.
 
 For more information about the project, please read [MoreInformations.md](MoreInformation.md "MoreInformations.md")
+If you have questions to this project feel free to write me under tomix90@gmx.de.
 
 ## Dependencies
 
